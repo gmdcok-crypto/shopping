@@ -1,68 +1,18 @@
-# HARAL — Railway 배포 가이드
+# HARAL — Railway 배포 가이드 (API·DB)
 
-## Netlify 빌드 오류가 뜰 때
-
-이 저장소는 **Railway 전용**입니다. GitHub에 연결된 **Netlify 사이트가 남아 있으면** 푸시할 때마다 아래 오류가 납니다.
-
-```
-build.command failed — npm run build (exit code 254)
-```
-
-원인: Netlify가 저장소 **루트**에서 `npm run build`를 실행하는데, 루트에는 `package.json`이 없고 프론트는 `haral-shop/`에 있습니다.
-
-### 해결 (Netlify 끄기)
-
-1. [Netlify Dashboard](https://app.netlify.com) → 해당 사이트
-2. **Site configuration** → **Build & deploy** → **Stop builds**  
-   또는 **General** → **Delete site**
-3. GitHub 연결을 끊으면 푸시 시 Netlify 빌드가 더 이상 실행되지 않습니다.
-
-**배포는 Railway `web` 서비스만 사용하세요.** (Netlify 아님)
-
----
-
-## UI가 안 바뀔 때 (히어로 배너 등)
-
-**배포가 실패하면 예전 버전이 계속 보입니다.** Railway → Deployments에서 최신 커밋이 **Success**인지 확인하세요.
-
-배포 **성공**인데도 옛 화면이면:
-
-1. 페이지 **맨 아래** `build: xxxxxxx` 해시 확인 — 최신 커밋과 같은지
-2. 브라우저 **시크릿 창**으로 Railway URL 열기
-3. 예전 PWA 캐시: Chrome → 사이트 설정 → **데이터 삭제**
-4. `web` 서비스 **Root Directory** = `haral-shop` 인지 (루트에 배포되면 옛 구조일 수 있음)
-
-- 실패 중이면 아래 **web 서비스 설정**을 맞춘 뒤 **Redeploy**
-- 성공 후 사이트 하단에 `build: c7a8627` 같은 짧은 커밋 해시가 보이면 최신 배포입니다
+프론트엔드는 **Netlify** → [NETLIFY.md](./NETLIFY.md)  
+이 문서는 **Railway `api` + MySQL** 설정입니다.
 
 ---
 
 ## 서비스 구조
 
 ```
-Railway Project
-├── api        (backend/)     FastAPI + MySQL + R2
-├── web        (haral-shop/)   Next.js PWA
-└── mysql      (플러그인)      MySQL
+Netlify          Railway Project
+haral-shop/  →   ├── api        (backend/)   FastAPI
+(프론트)          ├── mysql      (플러그인)   MySQL
+                  └── (web 서비스는 Netlify 사용 시 불필요)
 ```
-
-### 모노레포 배포 방식 (둘 중 하나)
-
-**방식 A — Root Directory 사용 (권장)**
-
-| 서비스 | Root Directory | Builder |
-|--------|----------------|---------|
-| web | `haral-shop` | Dockerfile |
-| api | `backend` | Dockerfile |
-
-**방식 B — Root Directory 비움 (저장소 루트에서 빌드)**
-
-| 서비스 | Root Directory | Dockerfile |
-|--------|----------------|------------|
-| web | *(비움)* | 루트 `Dockerfile` |
-| api | *(비움)* | Variable `RAILWAY_DOCKERFILE_PATH=Dockerfile.api` |
-
-> 스크린샷에 `node@22.22.3`이 보이면 **Railpack**이 Dockerfile을 안 쓰는 상태입니다. Settings → Builder를 **Dockerfile**로 바꾸세요.
 
 ---
 
@@ -106,27 +56,15 @@ Railway Project
 
 ---
 
-## 4. 프론트엔드 (web) — 필수 설정
+## 4. 프론트엔드 → Netlify
 
-Railway 대시보드 → **web** 서비스 → **Settings**:
+프론트는 **Netlify**에서 배포합니다. [NETLIFY.md](./NETLIFY.md) 참고.
 
-| 항목 | 값 |
-|------|-----|
-| **Root Directory** | `haral-shop` |
-| **Builder** | `Dockerfile` |
-| **Dockerfile Path** | `Dockerfile` |
-| **Start Command** | *(비움)* |
-| **Use Metal Build Environment** | OFF 권장 |
-
-**Variables** (Build + Deploy):
+Netlify 환경 변수:
 
 ```
-NEXT_PUBLIC_API_URL=https://${{api.RAILWAY_PUBLIC_DOMAIN}}
+NEXT_PUBLIC_API_URL=https://<api-production-xxxx>.up.railway.app
 ```
-
-**Networking** → **Generate Domain** (안 하면 "Unexposed service" — 브라우저에서 접속 불가)
-
-배포 성공 확인: `https://<web-domain>/ko` → 상단 **「진행 중인 행사」** 배너 슬라이드
 
 ---
 

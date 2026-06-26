@@ -4,21 +4,22 @@
 
 ## 구조
 
-| 서비스 | 폴더 | Railway | 저장소 |
-|--------|------|---------|--------|
-| API | `backend/` | api | MySQL + R2 |
-| Web | `haral-shop/` | web | - |
+| 역할 | 폴더 | 배포 |
+|------|------|------|
+| **프론트** | `haral-shop/` | **Netlify** |
+| **API** | `backend/` | **Railway** (api + MySQL) |
 
-## 배포 (Railway만 — Netlify 사용 안 함)
+## 배포
 
-**[RAILWAY.md](./RAILWAY.md)** — Railway 전용. Netlify에 사이트가 있으면 빌드 오류가 납니다 → **Netlify 사이트 삭제 또는 빌드 중지** 필요.
+- **프론트 (Netlify):** [NETLIFY.md](./NETLIFY.md)
+- **API (Railway):** [RAILWAY.md](./RAILWAY.md)
 
-1. GitHub `main` 푸시 → **Railway** 자동 배포
-2. `web` 서비스: Root Directory `haral-shop`, Builder `Dockerfile`, 도메인 생성
-3. `api` + MySQL (상품 데이터용, R2는 나중에 가능)
+1. Netlify: GitHub 연결 → `netlify.toml`로 `haral-shop` 빌드
+2. Railway: `api` + MySQL, `NEXT_PUBLIC_API_URL`을 Netlify에 설정
+3. R2(이미지 업로드)는 나중에 가능
 
 ## 데이터
 
 - **MySQL**: 상품, 주문, 회원
-- **Cloudflare R2**: 상품 이미지
-- 첫 배포 시 12개 샘플 상품 자동 시드
+- **Cloudflare R2**: 상품 이미지 (선택)
+- 첫 API 배포 시 12개 샘플 상품 자동 시드
