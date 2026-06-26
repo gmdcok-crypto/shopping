@@ -1,5 +1,3 @@
-"use client";
-
 import { Link } from "@/i18n/navigation";
 import type { HeroBannerItem } from "@/lib/hero-banners";
 

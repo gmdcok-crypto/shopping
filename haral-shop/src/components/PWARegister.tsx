@@ -6,13 +6,16 @@ export function PWARegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
+    // Remove stale PWA cache so Railway deploys show new UI immediately
     navigator.serviceWorker.getRegistrations().then((registrations) => {
-      registrations.forEach((registration) => {
-        registration.update();
-      });
+      registrations.forEach((registration) => registration.unregister());
     });
 
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    if ("caches" in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => caches.delete(key));
+      });
+    }
   }, []);
 
   return null;

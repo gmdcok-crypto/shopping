@@ -4,6 +4,8 @@ import { Storefront } from "@/components/Storefront";
 import { HERO_BANNERS } from "@/lib/hero-banners";
 import type { ProductCategory } from "@/lib/products";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({
   params,
   searchParams,
