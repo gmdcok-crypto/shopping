@@ -1,2 +1,5 @@
-# Deprecated — HARAL uses Railway single-service deploy (see ../RAILWAY.md)
-# Remove Netlify site or disable builds.
+# HARAL — Netlify builds disabled (deploy on Railway only)
+# See RAILWAY.md. Delete or unlink this Netlify site when convenient.
+
+[build]
+  ignore = "exit 0"
