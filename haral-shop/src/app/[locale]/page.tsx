@@ -23,7 +23,7 @@ export default async function HomePage({
 
   return (
     <>
-      <HeroPromoCarousel sectionTitle={t("sectionTitle")} items={bannerItems} />
+      <HeroPromoCarousel items={bannerItems} />
       <Suspense
         fallback={
           <div className="py-20 text-center text-gray-400">...</div>
