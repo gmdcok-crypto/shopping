@@ -15,7 +15,36 @@
     "titleHighlight": "in Korea",
     "subtitle": "Quality halal-certified meat, sausages, and groceries at affordable prices for foreign residents in Korea. Order easily in your language — delivered anywhere in Korea.",
     "statsProducts": "products waiting for you",
-    "statsUsers": "customers with us"
+    "statsUsers": "customers with us",
+    "banners": {
+      "ariaLabel": "Promotional banners",
+      "prev": "Previous banner",
+      "next": "Next banner",
+      "sale": {
+        "badge": "Weekly Sale",
+        "title": "Halal Meat Sale — Up to 20% Off",
+        "subtitle": "Certified beef, lamb, and chicken at special prices.",
+        "cta": "Shop Meat"
+      },
+      "delivery": {
+        "badge": "Nationwide",
+        "title": "Free Delivery on Orders Over ₩50,000",
+        "subtitle": "Groceries and essentials delivered anywhere in Korea.",
+        "cta": "Browse Groceries"
+      },
+      "halal": {
+        "badge": "Halal Certified",
+        "title": "Trusted 100% Halal Products",
+        "subtitle": "Curated for Muslims and foreigners living in Korea.",
+        "cta": "Start Shopping"
+      },
+      "spice": {
+        "badge": "New Arrivals",
+        "title": "New Spices & Sauces in Stock",
+        "subtitle": "Bring the taste of home with halal spices and sauces.",
+        "cta": "Shop Spices"
+      }
+    }
   },
   "categories": {
     "title": "Categories",

@@ -15,7 +15,36 @@
     "titleHighlight": "halol internet do'koni",
     "subtitle": "Koreyada yashovchi chet elliklar uchun sifatli halol go'sht, kolbasa va oziq-ovqat mahsulotlari arzon narxlarda. O'z tilingizda buyurtma bering — butun Koreya bo'ylab yetkazib beramiz.",
     "statsProducts": "ta mahsulot sizni kutmoqda",
-    "statsUsers": "nafar mijoz biz bilan"
+    "statsUsers": "nafar mijoz biz bilan",
+    "banners": {
+      "ariaLabel": "Aksiya bannerlari",
+      "prev": "Oldingi banner",
+      "next": "Keyingi banner",
+      "sale": {
+        "badge": "Haftalik aksiya",
+        "title": "Halol go'sht chegirmasi — 20% gacha",
+        "subtitle": "Sertifikatlangan mol, qo'y va tovuq go'shti maxsus narxlarda.",
+        "cta": "Go'shtni ko'rish"
+      },
+      "delivery": {
+        "badge": "Butun Koreya",
+        "title": "50 000₩ dan ortiq buyurtmada bepul yetkazish",
+        "subtitle": "Vatandoshlik oziq-ovqati Koreyaning istalgan joyiga yetkaziladi.",
+        "cta": "Oziq-ovqatni ko'rish"
+      },
+      "halal": {
+        "badge": "Halol sertifikat",
+        "title": "Ishonchli 100% halol mahsulotlar",
+        "subtitle": "Koreyada yashovchi musulmonlar va chet elliklar uchun.",
+        "cta": "Xarid qilish"
+      },
+      "spice": {
+        "badge": "Yangi kelgan",
+        "title": "Yangi ziravorlar va souslar",
+        "subtitle": "Uyingiz ta'mi — halol ziravorlar va souslar.",
+        "cta": "Ziravorlarni ko'rish"
+      }
+    }
   },
   "categories": {
     "title": "Kategoriyalar",
