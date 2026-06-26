@@ -1,119 +1,76 @@
-# HARAL — Railway 배포 가이드 (API·DB)
+# HARAL — Railway 배포 (단일 서비스)
 
-프론트엔드는 **Netlify** → [NETLIFY.md](./NETLIFY.md)  
-이 문서는 **Railway `api` + MySQL** 설정입니다.
-
----
-
-## 서비스 구조
+프론트(PWA)와 API를 **Railway 서비스 1개**에서 실행합니다 (`record` 프로젝트와 동일 패턴).
 
 ```
-Netlify          Railway Project
-haral-shop/  →   ├── api        (backend/)   FastAPI
-(프론트)          ├── mysql      (플러그인)   MySQL
-                  └── (web 서비스는 Netlify 사용 시 불필요)
+Railway Project
+├── haral (또는 shopping)   루트 Dockerfile — FastAPI + 정적 PWA
+└── mysql                   MySQL 플러그인
 ```
 
----
-
-## 1. MySQL 추가
-
-1. Railway 프로젝트 → **+ New** → **Database** → **MySQL**
-2. `api` 서비스 → **Variables** → `MYSQL_URL` 또는 `DATABASE_URL`을 MySQL에서 **Reference**로 연결
-
-> `mysql://user:pass@host:3306/railway` 형식이면 앱에서 자동으로 `mysql+pymysql://`로 변환합니다.
+Netlify는 **사용하지 않습니다.**
 
 ---
 
-## 2. Cloudflare R2 설정
+## 1. MySQL
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) → R2 → **Create bucket** (`haral-shop`)
-2. **Manage R2 API Tokens** → Object Read & Write 권한으로 토큰 생성
-3. Public access 또는 Custom Domain 연결
-4. `api` 서비스 Variables:
-
-| 변수 | 설명 |
-|------|------|
-| `R2_ACCOUNT_ID` | Cloudflare Account ID |
-| `R2_ACCESS_KEY_ID` | R2 API 토큰 Access Key |
-| `R2_SECRET_ACCESS_KEY` | R2 API 토큰 Secret |
-| `R2_BUCKET_NAME` | `haral-shop` |
-| `R2_PUBLIC_BASE_URL` | `https://pub-xxxx.r2.dev` 또는 CDN 도메인 |
-| `ADMIN_API_KEY` | 관리자용 랜덤 문자열 |
+1. Railway → **+ New** → **Database** → **MySQL**
+2. 앱 서비스 → **Variables** → `DATABASE_URL`을 MySQL에서 **Reference**로 연결
 
 ---
 
-## 3. 백엔드 (api)
+## 2. 앱 서비스
 
 | 설정 | 값 |
 |------|-----|
-| Root Directory | `backend` |
-| Service Name | `api` |
+| Root Directory | *(비움 — 저장소 루트)* |
+| Builder | Dockerfile (`Dockerfile`) |
+| Start Command | *(비움 — Dockerfile CMD)* |
 
-첫 배포 시 `products.json` → MySQL 자동 시드 (12개 상품).
+**Healthcheck:** `GET /api/health`
 
-**헬스체크:** `GET /api/health`
+배포 후 확인:
 
----
-
-## 4. 프론트엔드 → Netlify
-
-프론트는 **Netlify**에서 배포합니다. [NETLIFY.md](./NETLIFY.md) 참고.
-
-Netlify 환경 변수:
-
-```
-NEXT_PUBLIC_API_URL=https://<api-production-xxxx>.up.railway.app
-```
+- `https://<도메인>/api/health` → `{"status":"ok", ...}`
+- `https://<도메인>/ko/` → 쇼핑몰 화면 + 상품 목록
 
 ---
 
-## 5. 관리자 API (이미지 업로드)
+## 3. 환경 변수 (선택)
 
-### 상품 이미지 업로드 (R2 + DB 연동)
+| 변수 | 설명 |
+|------|------|
+| `DATABASE_URL` | MySQL Reference (필수) |
+| `R2_*` | 이미지 업로드 (선택) |
+| `ADMIN_API_KEY` | 관리자 API (선택) |
+| `CORS_ORIGINS` | 커스텀 도메인 사용 시 |
 
-```bash
-curl -X POST "https://<api-domain>/api/upload/products/beef-steak/image" \
-  -H "X-API-Key: YOUR_ADMIN_API_KEY" \
-  -F "file=@product.jpg"
-```
-
-### 이미지만 업로드
-
-```bash
-curl -X POST "https://<api-domain>/api/upload/image" \
-  -H "X-API-Key: YOUR_ADMIN_API_KEY" \
-  -F "file=@product.jpg"
-```
-
-API 문서: `https://<api-domain>/docs`
+`API_URL` / `NEXT_PUBLIC_API_URL` 은 **필요 없음** (같은 도메인 `/api`).
 
 ---
 
-## 6. 데이터 저장 구조
+## 4. 옛 설정 정리
 
-| 데이터 | 저장소 |
-|--------|--------|
-| 상품 정보, 주문, 회원 | MySQL |
-| 상품 이미지 파일 | Cloudflare R2 |
-| DB `image` 필드 | R2 공개 URL |
+| 제거/중지 | 이유 |
+|-----------|------|
+| Netlify 사이트 | Railway가 프론트+API 담당 |
+| Railway `shopping` (Next만 돌리던 서비스) | 루트 Dockerfile 서비스로 통합 |
+| 별도 `api` 서비스 | 통합 Dockerfile에 포함 |
 
 ---
 
-## 7. 문제 해결
+## 5. 문제 해결
 
 | 증상 | 해결 |
 |------|------|
-| `railpack process exited` / Metal builder 멈춤 | 아래 **빌드 실패** 참고 |
-| DB 연결 실패 | `DATABASE_URL` Reference 연결 확인 |
-| 상품 없음 | api 로그 "Seeded N products" 확인 |
-| R2 업로드 503 | R2 환경 변수 5개 설정 확인 |
-| 업로드 401 | `X-API-Key` = `ADMIN_API_KEY` 확인 |
+| 상품 없음 / API error | `/api/health` 확인, MySQL `DATABASE_URL` Reference |
+| 빈 화면 | Deploy 로그에서 `npm run build` 성공 여부 확인 |
+| DB 연결 실패 | `DATABASE_URL` 형식 (`mysql://` → 자동 변환) |
 
-### 빌드 실패 (`railpack process exited`, Metal builder)
+로컬 Docker 테스트:
 
-1. **Root Directory** 확인: `web` → `haral-shop`, `api` → `backend` (**필수** — 없으면 `start.sh not found` 발생)
-2. **Builder**: 서비스 Settings → **Dockerfile** 선택, Path = `Dockerfile`
-3. **Start Command**: 비워 두기 (Dockerfile `CMD` 사용) — `./start.sh`로 되어 있으면 삭제
-4. Railway **Settings** → **Use Metal Build Environment** 끄기 → 재배포
-5. 그래도 실패하면 Build Logs **전체**를 확인 (위 두 줄만 보이면 인프라 이슈 → 재배포 또는 Metal 끄기)
+```powershell
+cd d:\HARAL
+docker build -t haral .
+docker run -p 8000:8000 -e DATABASE_URL=sqlite:///./haral.db haral
+```

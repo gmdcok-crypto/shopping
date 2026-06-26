@@ -1,26 +1,26 @@
-# HARAL Frontend — Railway PWA
+# HARAL Frontend (Next.js PWA)
 
-Railway **web** 서비스로 배포하는 Next.js 프론트엔드입니다.
+정적 export 빌드 후 **FastAPI가 `backend/static/`에서 서빙**합니다.  
+배포는 저장소 루트 `Dockerfile` → Railway 단일 서비스.
 
-## Railway 설정
+## 로컬 개발
 
-| 항목 | 값 |
-|------|-----|
-| Root Directory | `haral-shop` |
-| Service Name | `web` |
-| Start Command | `npm run start` (railway.toml) |
-
-### 필수 환경 변수
-
-```
-NEXT_PUBLIC_API_URL=https://${{api.RAILWAY_PUBLIC_DOMAIN}}
+```powershell
+npm install
+npm run dev
 ```
 
-백엔드 서비스 이름이 `api`가 아니면 `${{서비스이름.RAILWAY_PUBLIC_DOMAIN}}`으로 변경하세요.
+API는 `http://127.0.0.1:8000` (별도 터미널에서 `uvicorn`).
 
-## PWA
+## 프로덕션과 동일하게 로컬 테스트
 
-- 홈 화면 추가: `manifest.webmanifest`
-- 오프라인 캐시: `public/sw.js`
+```powershell
+npm run build
+xcopy /E /I /Y out ..\backend\static
+cd ..\backend
+uvicorn app.main:app --reload --port 8000
+```
 
-배포 가이드: [../RAILWAY.md](../RAILWAY.md)
+→ http://localhost:8000/ko/
+
+가이드: [../RAILWAY.md](../RAILWAY.md)

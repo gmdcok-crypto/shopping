@@ -1,13 +1,33 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from starlette.staticfiles import StaticFiles as StarletteStaticFiles
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
 from app.routers import auth, orders, products, upload
 from app.services.seed import seed_products
+
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+
+
+class NoCacheHtmlStaticFiles(StarletteStaticFiles):
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        content_type = response.headers.get("content-type", "")
+        should_disable_cache = "text/html" in content_type or path in {
+            "sw.js",
+            "manifest.webmanifest",
+        }
+        if should_disable_cache:
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
 
 
 @asynccontextmanager
@@ -47,16 +67,20 @@ app.include_router(auth.router, prefix=settings.api_prefix)
 app.include_router(upload.router, prefix=settings.api_prefix)
 
 
-@app.get("/")
-def root():
+@app.get("/api/health")
+def health():
     return {
-        "service": "HARAL API",
-        "docs": "/docs",
+        "status": "ok",
         "storage": "r2" if settings.r2_configured else "disabled",
         "database": "mysql" if "mysql" in settings.database_url else "other",
+        "frontend": STATIC_DIR.is_dir(),
     }
 
 
-@app.get("/api/health")
-def health():
-    return {"status": "ok"}
+@app.get("/")
+def root_redirect():
+    return RedirectResponse(url="/ko/", status_code=307)
+
+
+if STATIC_DIR.is_dir():
+    app.mount("/", NoCacheHtmlStaticFiles(directory=STATIC_DIR, html=True), name="frontend")

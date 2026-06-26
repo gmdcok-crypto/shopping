@@ -1,9 +1,9 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
-watchPatterns = ["haral-shop/**"]
+watchPatterns = ["haral-shop/**", "backend/**"]
 
 [deploy]
-healthcheckPath = "/ko"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 300
-restartPolicyType = "on_failure"
+restartPolicyType = "ON_FAILURE"

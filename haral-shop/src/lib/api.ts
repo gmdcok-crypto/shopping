@@ -1,24 +1,10 @@
+const LOCAL_API = "http://127.0.0.1:8000";
+
 function getApiBase(): string {
-  const isServer = typeof window === "undefined";
-
-  if (isServer) {
-    const url = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL)?.replace(
-      /\/$/,
-      ""
-    );
-    if (url) return url;
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "API_URL is required. Add it in Netlify Environment variables, then redeploy."
-      );
-    }
-    return "http://localhost:8000";
+  if (typeof window !== "undefined") {
+    return "";
   }
-
-  // Browser: same-origin /api/* → Next.js rewrite → Railway API
-  const direct = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
-  if (direct) return direct;
-  return "";
+  return (process.env.API_URL || LOCAL_API).replace(/\/$/, "");
 }
 
 export function getApiUrl(path: string): string {
@@ -31,14 +17,12 @@ export async function apiFetch<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  const isServer = typeof window === "undefined";
   const res = await fetch(getApiUrl(path), {
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,
     },
-    ...(isServer && !options?.cache ? { next: { revalidate: 60 } } : {}),
   });
 
   if (!res.ok) {

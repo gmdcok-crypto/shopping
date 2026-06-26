@@ -1,25 +1,26 @@
-# Monorepo root — Railway web service (Root Directory not set)
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY haral-shop/package.json haral-shop/package-lock.json ./
-RUN npm ci
+# HARAL — Railway single service (FastAPI + static PWA)
+# Builds haral-shop (Next static export) and serves from FastAPI.
 
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS frontend-build
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY haral-shop/ .
-ARG NEXT_PUBLIC_API_URL
-ARG RAILWAY_GIT_COMMIT_SHA=unknown
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_BUILD_SHA=$RAILWAY_GIT_COMMIT_SHA
+ENV NODE_OPTIONS=--max-old-space-size=1536
+
+COPY haral-shop/package.json haral-shop/package-lock.json ./
+RUN npm ci --prefer-offline --no-audit --no-fund
+COPY haral-shop/ ./
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM python:3.11-slim
 WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-EXPOSE 3000
-CMD ["sh", "-c", "npm run start"]
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend/ .
+COPY --from=frontend-build /app/out ./static
+
+EXPOSE 8000
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
