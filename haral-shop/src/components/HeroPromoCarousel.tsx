@@ -36,7 +36,7 @@ export function HeroPromoCarousel({ items }: HeroPromoCarouselProps) {
               className={`relative h-44 w-full shrink-0 bg-gradient-to-br sm:h-52 lg:h-56 ${banner.gradient} ${banner.pattern}`}
             >
               <div className="absolute inset-0 bg-black/10" />
-              <div className="relative z-10 flex h-full w-full flex-col justify-center px-6 py-5 sm:px-10 lg:px-12 xl:px-16">
+              <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-6 py-5 sm:px-8 lg:px-10">
                 <span className="mb-2 inline-flex w-fit rounded-full bg-white/30 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">
                   {banner.badge}
                 </span>

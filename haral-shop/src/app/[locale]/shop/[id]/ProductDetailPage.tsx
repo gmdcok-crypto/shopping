@@ -67,7 +67,7 @@ export function ProductDetailPage() {
   }
 
   return (
-    <div className="w-full px-4 py-8 sm:px-6 lg:px-10 xl:px-12">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700"
@@ -130,7 +130,7 @@ export function ProductDetailPage() {
       {related.length > 0 && (
         <section className="mt-16">
           <h2 className="mb-6 text-xl font-bold text-gray-900">{t("related")}</h2>
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
