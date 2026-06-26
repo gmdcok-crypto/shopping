@@ -106,7 +106,8 @@ API 문서: `https://<api-domain>/docs`
 
 ### 빌드 실패 (`railpack process exited`, Metal builder)
 
-1. **Root Directory** 확인: `web` → `haral-shop`, `api` → `backend`
-2. **Builder**: 각 폴더의 `Dockerfile` 사용 (`railway.toml`에 설정됨)
-3. Railway **Settings** → **Use Metal Build Environment** 끄기 → 재배포
-4. 그래도 실패하면 Build Logs **전체**를 확인 (위 두 줄만 보이면 인프라 이슈 → 재배포 또는 Metal 끄기)
+1. **Root Directory** 확인: `web` → `haral-shop`, `api` → `backend` (**필수** — 없으면 `start.sh not found` 발생)
+2. **Builder**: 서비스 Settings → **Dockerfile** 선택, Path = `Dockerfile`
+3. **Start Command**: 비워 두기 (Dockerfile `CMD` 사용) — `./start.sh`로 되어 있으면 삭제
+4. Railway **Settings** → **Use Metal Build Environment** 끄기 → 재배포
+5. 그래도 실패하면 Build Logs **전체**를 확인 (위 두 줄만 보이면 인프라 이슈 → 재배포 또는 Metal 끄기)
