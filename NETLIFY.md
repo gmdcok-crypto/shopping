@@ -1,58 +1,52 @@
 # HARAL — Netlify 프론트엔드 배포
 
-프론트엔드(**haral-shop**)는 **Netlify**, API·DB는 **Railway**입니다.
+프론트 = **Netlify** · API = **Railway** → [RAILWAY.md](./RAILWAY.md)
 
 ---
 
-## 1. Netlify Build settings (스크린샷 기준)
+## ★ Build settings (UI) — 전부 비우기
+
+Netlify UI → **Site configuration** → **Build & deploy** → **Build settings**
 
 | 항목 | 값 |
 |------|-----|
-| **Base directory** | `haral-shop` |
+| **Base directory** | *(비움)* |
 | **Package directory** | *(비움)* |
 | **Build command** | *(비움)* |
-| **Publish directory** | *(비움 — 절대 `haral-shop`이나 `.next` 넣지 마세요)* |
-| **Node.js** | **22** (`haral-shop/netlify.toml` + `.nvmrc`) |
+| **Publish directory** | *(비움)* |
 
-> **Publish = Base** 이면 플러그인 오류:  
-> `Your publish directory cannot be the same as the base directory`
+> UI에 `haral-shop` / `.next` / `npm run build` 가 남아 있으면 **삭제** 후 Save.  
+> UI 설정이 `netlify.toml` 보다 **우선**합니다.
 
-> **Node 20** 이면 플러그인 오류:  
-> `@netlify/plugin-nextjs` 는 **Node 22+** 필요
+모든 설정은 저장소 **루트** `netlify.toml` 이 담당합니다:
 
-설정 파일: `haral-shop/netlify.toml` (저장소 루트 아님)
+```toml
+base = "haral-shop"
+command = "npm run build"
+publish = ".next"      # haral-shop/.next (base와 다름)
+NODE_VERSION = "22"
+```
 
-### Environment variables
+### 자주 나는 오류
+
+| 오류 | 원인 | 해결 |
+|------|------|------|
+| `publish directory cannot be the same as base` | UI에 Base=`haral-shop` + Publish 비움 | **UI 전부 비우기** |
+| Node 20 vs 22 | 구버전 Node | `netlify.toml`에 Node 22 (이미 설정됨) |
+| exit 254 | 루트에서 빌드 | `netlify.toml` base 사용 |
+
+---
+
+## Environment variables
 
 | 변수 | 값 |
 |------|-----|
-| `NEXT_PUBLIC_API_URL` | Railway `api` URL (예: `https://api-production-xxxx.up.railway.app`) |
+| `NEXT_PUBLIC_API_URL` | Railway `api` URL |
 
 ---
 
-## 2. Railway (백엔드만)
+## 배포
 
-| 서비스 | Root Directory |
-|--------|----------------|
-| **api** | `backend` |
-| **mysql** | 플러그인 |
-
-→ [RAILWAY.md](./RAILWAY.md)
-
----
-
-## 3. 배포 후
-
-1. Netlify **Deploys** → **Published**
-2. Netlify URL `/ko` → 「진행 중인 행사」 배너
-
----
-
-## 4. 문제 해결
-
-| 오류 | 해결 |
-|------|------|
-| exit 254 | Base = `haral-shop`, 루트에서 빌드하지 않기 |
-| publish = base | Publish directory **비우기** |
-| Node 20 vs 22 | `NODE_VERSION=22` (이미 netlify.toml에 설정) |
-| 상품 없음 | `NEXT_PUBLIC_API_URL` 확인 |
+1. UI Build settings **전부 비운 뒤** Save
+2. **Deploys** → **Trigger deploy**
+3. Netlify URL `/ko` 확인

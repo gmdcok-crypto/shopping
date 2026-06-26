@@ -1,0 +1,14 @@
+# HARAL 프론트 — Netlify (모노레포)
+# ★ Netlify UI Build settings 는 전부 비워 두세요 (Base/Publish/Command 모두)
+#    UI 값이 netlify.toml 보다 우선해서 오류가 납니다.
+
+[build]
+  base = "haral-shop"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
