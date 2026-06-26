@@ -1,27 +1,24 @@
-# HARAL - Halal Online Shop in Korea
+# HARAL
 
-[bozoraka.com](https://bozoraka.com/)과 같이 **쇼핑몰만** 제공하는 할랄 온라인 마켓입니다.
+한국 거주 외국인용 할랄 쇼핑몰
 
-## 지원 언어
+## 구조
 
-한국어 · English · Русский · O'zbekcha
+| 서비스 | 폴더 | Railway | 저장소 |
+|--------|------|---------|--------|
+| API | `backend/` | api | MySQL + R2 |
+| Web | `haral-shop/` | web | - |
 
-## 페이지
+## 배포
 
-| 경로 | 설명 |
-|------|------|
-| `/ko` | 메인 (상품 목록) |
-| `/ko/shop/[id]` | 상품 상세 |
-| `/ko/cart` | 장바구니 |
-| `/ko/checkout` | 결제 |
-| `/ko/account` | 계정 |
+**[RAILWAY.md](./RAILWAY.md)** 참고
 
-## 시작하기
+1. MySQL 플러그인 추가
+2. R2 버킷 + API 토큰 설정
+3. `api` / `web` 서비스 배포
 
-```bash
-cd haral-shop
-npm install
-npm run dev
-```
+## 데이터
 
-http://localhost:3000
+- **MySQL**: 상품, 주문, 회원
+- **Cloudflare R2**: 상품 이미지
+- 첫 배포 시 12개 샘플 상품 자동 시드
