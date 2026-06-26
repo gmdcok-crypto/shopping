@@ -98,7 +98,15 @@ API 문서: `https://<api-domain>/docs`
 
 | 증상 | 해결 |
 |------|------|
+| `railpack process exited` / Metal builder 멈춤 | 아래 **빌드 실패** 참고 |
 | DB 연결 실패 | `DATABASE_URL` Reference 연결 확인 |
 | 상품 없음 | api 로그 "Seeded N products" 확인 |
 | R2 업로드 503 | R2 환경 변수 5개 설정 확인 |
 | 업로드 401 | `X-API-Key` = `ADMIN_API_KEY` 확인 |
+
+### 빌드 실패 (`railpack process exited`, Metal builder)
+
+1. **Root Directory** 확인: `web` → `haral-shop`, `api` → `backend`
+2. **Builder**: 각 폴더의 `Dockerfile` 사용 (`railway.toml`에 설정됨)
+3. Railway **Settings** → **Use Metal Build Environment** 끄기 → 재배포
+4. 그래도 실패하면 Build Logs **전체**를 확인 (위 두 줄만 보이면 인프라 이슈 → 재배포 또는 Metal 끄기)
