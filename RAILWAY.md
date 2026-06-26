@@ -11,6 +11,24 @@ Railway Project
 └── mysql      (플러그인)      MySQL
 ```
 
+### 모노레포 배포 방식 (둘 중 하나)
+
+**방식 A — Root Directory 사용 (권장)**
+
+| 서비스 | Root Directory | Builder |
+|--------|----------------|---------|
+| web | `haral-shop` | Dockerfile |
+| api | `backend` | Dockerfile |
+
+**방식 B — Root Directory 비움 (저장소 루트에서 빌드)**
+
+| 서비스 | Root Directory | Dockerfile |
+|--------|----------------|------------|
+| web | *(비움)* | 루트 `Dockerfile` |
+| api | *(비움)* | Variable `RAILWAY_DOCKERFILE_PATH=Dockerfile.api` |
+
+> 스크린샷에 `node@22.22.3`이 보이면 **Railpack**이 Dockerfile을 안 쓰는 상태입니다. Settings → Builder를 **Dockerfile**로 바꾸세요.
+
 ---
 
 ## 1. MySQL 추가

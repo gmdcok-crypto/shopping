@@ -1,9 +1,9 @@
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
+watchPatterns = ["haral-shop/**"]
 
 [deploy]
-startCommand = "npm run start"
 healthcheckPath = "/ko"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
