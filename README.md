@@ -9,13 +9,13 @@
 | API | `backend/` | api | MySQL + R2 |
 | Web | `haral-shop/` | web | - |
 
-## 배포
+## 배포 (Railway만)
 
-**[RAILWAY.md](./RAILWAY.md)** 참고
+**[RAILWAY.md](./RAILWAY.md)** — Netlify 없음, Railway 전용
 
-1. MySQL 플러그인 추가
-2. R2 버킷 + API 토큰 설정
-3. `api` / `web` 서비스 배포
+1. GitHub `main` 푸시 → Railway 자동 배포
+2. `web` 서비스: Root Directory `haral-shop`, Builder `Dockerfile`, 도메인 생성
+3. `api` + MySQL (상품 데이터용, R2는 나중에 가능)
 
 ## 데이터
 

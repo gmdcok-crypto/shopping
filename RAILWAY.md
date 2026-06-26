@@ -1,6 +1,16 @@
 # HARAL — Railway 배포 가이드
 
-백엔드·프론트엔드 **모두 Railway**에서 실행합니다.
+> **Netlify는 사용하지 않습니다.** 프론트·백엔드 **모두 Railway**에서만 배포합니다.  
+> GitHub `main` 푸시 → Railway 자동 배포. 로컬 `npm run dev` 없이 Railway URL에서 확인하세요.
+
+## UI가 안 바뀔 때 (히어로 배너 등)
+
+**배포가 실패하면 예전 버전이 계속 보입니다.** Railway → Deployments에서 최신 커밋이 **Success**인지 확인하세요.
+
+- 실패 중이면 아래 **web 서비스 설정**을 맞춘 뒤 **Redeploy**
+- 성공 후 사이트 하단에 `build: c7a8627` 같은 짧은 커밋 해시가 보이면 최신 배포입니다
+
+---
 
 ## 서비스 구조
 
@@ -71,12 +81,27 @@ Railway Project
 
 ---
 
-## 4. 프론트엔드 (web)
+## 4. 프론트엔드 (web) — 필수 설정
 
-| 설정 | 값 |
+Railway 대시보드 → **web** 서비스 → **Settings**:
+
+| 항목 | 값 |
 |------|-----|
-| Root Directory | `haral-shop` |
-| Variable | `NEXT_PUBLIC_API_URL=https://${{api.RAILWAY_PUBLIC_DOMAIN}}` |
+| **Root Directory** | `haral-shop` |
+| **Builder** | `Dockerfile` |
+| **Dockerfile Path** | `Dockerfile` |
+| **Start Command** | *(비움)* |
+| **Use Metal Build Environment** | OFF 권장 |
+
+**Variables** (Build + Deploy):
+
+```
+NEXT_PUBLIC_API_URL=https://${{api.RAILWAY_PUBLIC_DOMAIN}}
+```
+
+**Networking** → **Generate Domain** (안 하면 "Unexposed service" — 브라우저에서 접속 불가)
+
+배포 성공 확인: `https://<web-domain>/ko` → 상단 **「진행 중인 행사」** 배너 슬라이드
 
 ---
 

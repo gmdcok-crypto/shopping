@@ -9,7 +9,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY haral-shop/ .
 ARG NEXT_PUBLIC_API_URL
+ARG RAILWAY_GIT_COMMIT_SHA=unknown
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_BUILD_SHA=$RAILWAY_GIT_COMMIT_SHA
 RUN npm run build
 
 FROM node:20-alpine AS runner

@@ -30,6 +30,12 @@ export function Footer() {
 
         <div className="mt-6 border-t border-gray-200 pt-6 text-center text-xs text-gray-400">
           {t("rights")}
+          {process.env.NEXT_PUBLIC_BUILD_SHA &&
+            process.env.NEXT_PUBLIC_BUILD_SHA !== "unknown" && (
+              <span className="mt-1 block text-[10px] text-gray-300">
+                build: {process.env.NEXT_PUBLIC_BUILD_SHA.slice(0, 7)}
+              </span>
+            )}
         </div>
       </div>
     </footer>
