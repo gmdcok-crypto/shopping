@@ -83,7 +83,7 @@ export function AccountPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="w-full px-4 py-8 sm:px-6 lg:px-10 xl:px-12">
       <h1 className="mb-2 text-3xl font-bold text-gray-900">{t("title")}</h1>
       {email && <p className="mb-8 text-sm text-gray-500">{email}</p>}
 

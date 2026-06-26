@@ -30,7 +30,7 @@ export function Storefront({ category, searchQuery, sort }: StorefrontProps) {
   }, [category, searchQuery, sort]);
 
   return (
-    <div id="products" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div id="products" className="w-full px-4 py-8 sm:px-6 lg:px-10 xl:px-12">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-gray-500">
           {loading ? "..." : t("results", { count: products.length })}
@@ -68,7 +68,7 @@ export function Storefront({ category, searchQuery, sort }: StorefrontProps) {
         <div className="py-20 text-center text-gray-500">{t("notFound")}</div>
       )}
       {!loading && !error && products.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
