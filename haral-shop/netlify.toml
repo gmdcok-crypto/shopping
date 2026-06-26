@@ -1,0 +1,11 @@
+# 프론트엔드 (haral-shop) — Netlify
+# UI: Base directory = haral-shop, Build/Publish 비움
+
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

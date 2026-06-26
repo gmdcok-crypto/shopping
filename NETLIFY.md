@@ -2,61 +2,57 @@
 
 프론트엔드(**haral-shop**)는 **Netlify**, API·DB는 **Railway**입니다.
 
-```
-GitHub (monorepo)
-├── haral-shop/  →  Netlify (프론트)
-└── backend/       →  Railway api + MySQL
-```
-
 ---
 
-## 1. Netlify 사이트 설정
-
-[Netlify Dashboard](https://app.netlify.com) → Site configuration → **Build & deploy**
+## 1. Netlify Build settings (스크린샷 기준)
 
 | 항목 | 값 |
 |------|-----|
-| **Base directory** | `haral-shop` *(또는 비움 — `netlify.toml`이 지정)* |
-| **Build command** | *(비움 — `netlify.toml` 사용)* |
-| **Publish directory** | *(비움 — Next.js 플러그인이 처리)* |
+| **Base directory** | `haral-shop` |
+| **Package directory** | *(비움)* |
+| **Build command** | *(비움)* |
+| **Publish directory** | *(비움 — 절대 `haral-shop`이나 `.next` 넣지 마세요)* |
+| **Node.js** | **22** (`haral-shop/netlify.toml` + `.nvmrc`) |
 
-> UI에 `npm run build` + `publish: .next`가 **루트**로 직접 설정되어 있으면 **삭제**하세요.  
-> 그게 `exit code 254` 오류 원인입니다.
+> **Publish = Base** 이면 플러그인 오류:  
+> `Your publish directory cannot be the same as the base directory`
 
-### 필수 환경 변수 (Environment variables)
+> **Node 20** 이면 플러그인 오류:  
+> `@netlify/plugin-nextjs` 는 **Node 22+** 필요
+
+설정 파일: `haral-shop/netlify.toml` (저장소 루트 아님)
+
+### Environment variables
 
 | 변수 | 값 |
 |------|-----|
-| `NEXT_PUBLIC_API_URL` | Railway `api` 서비스 URL (예: `https://api-production-xxxx.up.railway.app`) |
-
-Railway `api` 서비스가 없으면 상품 목록이 비어 있을 수 있습니다.
+| `NEXT_PUBLIC_API_URL` | Railway `api` URL (예: `https://api-production-xxxx.up.railway.app`) |
 
 ---
 
 ## 2. Railway (백엔드만)
 
-| 서비스 | Root Directory | 역할 |
-|--------|----------------|------|
-| **api** | `backend` | FastAPI |
-| **mysql** | (플러그인) | DB |
-| ~~web~~ | — | **Netlify 쓰면 Railway web 불필요** |
+| 서비스 | Root Directory |
+|--------|----------------|
+| **api** | `backend` |
+| **mysql** | 플러그인 |
 
-자세한 API·MySQL·R2 설정: [RAILWAY.md](./RAILWAY.md)
+→ [RAILWAY.md](./RAILWAY.md)
 
 ---
 
-## 3. 배포 후 확인
+## 3. 배포 후
 
-1. Netlify → **Deploys** → 최신 **Published**
-2. Netlify 사이트 URL `/ko` → **「진행 중인 행사」** 배너 슬라이드
-3. 상품이 보이려면 Railway `api` + MySQL 연결 확인
+1. Netlify **Deploys** → **Published**
+2. Netlify URL `/ko` → 「진행 중인 행사」 배너
 
 ---
 
 ## 4. 문제 해결
 
-| 증상 | 해결 |
+| 오류 | 해결 |
 |------|------|
-| `build.command failed` exit 254 | Netlify UI에서 루트 빌드 설정 삭제, `netlify.toml` 사용 |
-| 배너 안 보임 | Netlify 최신 배포 성공 여부 확인, 시크릿 창으로 접속 |
-| 상품 없음 | `NEXT_PUBLIC_API_URL` → Railway api 도메인 확인 |
+| exit 254 | Base = `haral-shop`, 루트에서 빌드하지 않기 |
+| publish = base | Publish directory **비우기** |
+| Node 20 vs 22 | `NODE_VERSION=22` (이미 netlify.toml에 설정) |
+| 상품 없음 | `NEXT_PUBLIC_API_URL` 확인 |
