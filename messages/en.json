@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "title": "HARAL | Halal Online Shop in Korea",
+    "description": "Halal online shop for foreigners living in Korea. Halal meat, groceries, and spices delivered nationwide."
+  },
+  "nav": {
+    "cart": "Cart",
+    "account": "My Account",
+    "search": "Search products...",
+    "login": "Login",
+    "register": "Register"
+  },
+  "hero": {
+    "title": "HARAL Halal Internet Shop",
+    "titleHighlight": "in Korea",
+    "subtitle": "Quality halal-certified meat, sausages, and groceries at affordable prices for foreign residents in Korea. Order easily in your language — delivered anywhere in Korea.",
+    "statsProducts": "products waiting for you",
+    "statsUsers": "customers with us"
+  },
+  "categories": {
+    "title": "Categories",
+    "subtitle": "Browse by category",
+    "all": "All",
+    "meat": "Halal Meat",
+    "sausage": "Sausages",
+    "grocery": "Groceries",
+    "dairy": "Dairy",
+    "spice": "Spices",
+    "frozen": "Frozen Foods"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Browse our catalog",
+    "viewAll": "View All",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "halal": "Halal",
+    "price": "Price",
+    "quantity": "Quantity",
+    "related": "Related Products",
+    "notFound": "Product not found",
+    "filter": "Filter",
+    "sort": "Sort",
+    "sortPopular": "Popular",
+    "sortPriceLow": "Price: Low to High",
+    "sortPriceHigh": "Price: High to Low",
+    "results": "{count} products"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyDesc": "Add some delicious halal products!",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "freeShipping": "Free",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "itemAdded": "Added to cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shippingInfo": "Shipping Information",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "payment": "Payment Method",
+    "card": "Credit Card",
+    "bank": "Bank Transfer",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "success": "Order placed successfully!",
+    "successDesc": "A confirmation email will be sent to you."
+  },
+  "footer": {
+    "description": "Halal online shop for foreigners in Korea.",
+    "rights": "© 2026 HARAL. All rights reserved."
+  },
+  "account": {
+    "title": "My Account",
+    "orders": "Order History",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "loginTitle": "Login",
+    "registerTitle": "Register",
+    "email": "Email",
+    "password": "Password",
+    "noOrders": "No orders yet"
+  },
+  "common": {
+    "won": "KRW",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "back": "Back",
+    "viewDetails": "View Details"
+  }
+}

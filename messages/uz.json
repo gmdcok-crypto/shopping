@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "title": "HARAL | Koreyadagi halol internet do'koni",
+    "description": "Koreyada yashovchi chet elliklar uchun halol onlayn do'kon. Go'sht, oziq-ovqat va ziravorlar yetkazib beriladi."
+  },
+  "nav": {
+    "cart": "Savat",
+    "account": "Mening hisobim",
+    "search": "Mahsulot qidirish...",
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish"
+  },
+  "hero": {
+    "title": "Koreyadagi HARAL",
+    "titleHighlight": "halol internet do'koni",
+    "subtitle": "Koreyada yashovchi chet elliklar uchun sifatli halol go'sht, kolbasa va oziq-ovqat mahsulotlari arzon narxlarda. O'z tilingizda buyurtma bering — butun Koreya bo'ylab yetkazib beramiz.",
+    "statsProducts": "ta mahsulot sizni kutmoqda",
+    "statsUsers": "nafar mijoz biz bilan"
+  },
+  "categories": {
+    "title": "Kategoriyalar",
+    "subtitle": "Kategoriyani tanlang",
+    "all": "Barchasi",
+    "meat": "Halol go'sht",
+    "sausage": "Kolbasa",
+    "grocery": "Oziq-ovqat",
+    "dairy": "Sut mahsulotlari",
+    "spice": "Ziravorlar",
+    "frozen": "Muzlatilgan"
+  },
+  "products": {
+    "title": "Mahsulotlar",
+    "subtitle": "Do'kon katalogi",
+    "viewAll": "Barchasini ko'rish",
+    "addToCart": "Savatga qo'shish",
+    "outOfStock": "Tugagan",
+    "halal": "Halol",
+    "price": "Narx",
+    "quantity": "Miqdor",
+    "related": "O'xshash mahsulotlar",
+    "notFound": "Mahsulot topilmadi",
+    "filter": "Filtr",
+    "sort": "Saralash",
+    "sortPopular": "Mashhurlik bo'yicha",
+    "sortPriceLow": "Narx: pastdan yuqoriga",
+    "sortPriceHigh": "Narx: yuqoridan pastga",
+    "results": "{count} ta mahsulot"
+  },
+  "cart": {
+    "title": "Savat",
+    "empty": "Savat bo'sh",
+    "emptyDesc": "Mazali halol mahsulotlarni qo'shing!",
+    "continueShopping": "Xaridni davom ettirish",
+    "subtotal": "Oraliq summa",
+    "shipping": "Yetkazib berish",
+    "freeShipping": "Bepul",
+    "total": "Jami",
+    "checkout": "Buyurtma berish",
+    "remove": "O'chirish",
+    "itemAdded": "Savatga qo'shildi"
+  },
+  "checkout": {
+    "title": "Buyurtma berish",
+    "shippingInfo": "Yetkazib berish ma'lumotlari",
+    "name": "To'liq ism",
+    "phone": "Telefon raqami",
+    "address": "Manzil",
+    "city": "Shahar",
+    "postalCode": "Pochta indeksi",
+    "payment": "To'lov usuli",
+    "card": "Bank kartasi",
+    "bank": "Bank o'tkazmasi",
+    "orderSummary": "Buyurtma xulosasi",
+    "placeOrder": "Buyurtma berish",
+    "success": "Buyurtma muvaffaqiyatli berildi!",
+    "successDesc": "Tasdiqlash xati yuboriladi."
+  },
+  "footer": {
+    "description": "Koreyadagi chet elliklar uchun halol onlayn do'kon.",
+    "rights": "© 2026 HARAL. Barcha huquqlar himoyalangan."
+  },
+  "account": {
+    "title": "Mening hisobim",
+    "orders": "Buyurtmalar tarixi",
+    "profile": "Profil",
+    "settings": "Sozlamalar",
+    "logout": "Chiqish",
+    "loginTitle": "Kirish",
+    "registerTitle": "Ro'yxatdan o'tish",
+    "email": "Email",
+    "password": "Parol",
+    "noOrders": "Hozircha buyurtmalar yo'q"
+  },
+  "common": {
+    "won": "von",
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "back": "Orqaga",
+    "viewDetails": "Batafsil"
+  }
+}
