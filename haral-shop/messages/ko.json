@@ -17,6 +17,7 @@
     "statsProducts": "개 상품이 기다리고 있습니다",
     "statsUsers": "명의 고객이 함께합니다",
     "banners": {
+      "sectionTitle": "진행 중인 행사",
       "ariaLabel": "행사 배너",
       "prev": "이전 배너",
       "next": "다음 배너",

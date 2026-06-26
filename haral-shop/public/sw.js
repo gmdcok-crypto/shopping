@@ -1,5 +1,5 @@
-const CACHE = "haral-v1";
-const PRECACHE = ["/", "/ko", "/manifest.webmanifest", "/icons/icon.svg"];
+const CACHE = "haral-v2";
+const PRECACHE = ["/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -9,9 +9,12 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+      )
+      .then(() => self.clients.claim())
   );
 });
 
@@ -21,6 +24,14 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.pathname.startsWith("/api") || url.hostname !== self.location.hostname) {
+    return;
+  }
+
+  // Always fetch fresh HTML pages (avoid stale hero/UI after deploy)
+  if (request.mode === "navigate" || request.headers.get("accept")?.includes("text/html")) {
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request))
+    );
     return;
   }
 

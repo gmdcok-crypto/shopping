@@ -17,6 +17,7 @@
     "statsProducts": "товаров ждут вас",
     "statsUsers": "клиентов с нами",
     "banners": {
+      "sectionTitle": "Акции",
       "ariaLabel": "Рекламные баннеры",
       "prev": "Предыдущий баннер",
       "next": "Следующий баннер",

@@ -6,15 +6,32 @@ import { Link } from "@/i18n/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { HERO_BANNERS } from "@/lib/hero-banners";
 
-const AUTOPLAY_MS = 4500;
-const SWIPE_THRESHOLD = 48;
+const AUTOPLAY_MS = 4000;
+const GAP_PX = 12;
+const SWIPE_THRESHOLD = 40;
 
 export function HeroBanner() {
   const t = useTranslations("hero.banners");
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const [slideStep, setSlideStep] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const count = HERO_BANNERS.length;
+
+  const measure = useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const slide = viewport.querySelector<HTMLElement>("[data-banner-slide]");
+    if (!slide) return;
+    setSlideStep(slide.offsetWidth + GAP_PX);
+  }, []);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
 
   const goTo = useCallback(
     (next: number) => {
@@ -24,10 +41,10 @@ export function HeroBanner() {
   );
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || slideStep === 0) return;
     const timer = setInterval(() => goTo(index + 1), AUTOPLAY_MS);
     return () => clearInterval(timer);
-  }, [index, isPaused, goTo]);
+  }, [index, isPaused, goTo, slideStep]);
 
   const handleTouchStart = (clientX: number) => {
     touchStartX.current = clientX;
@@ -43,55 +60,70 @@ export function HeroBanner() {
   };
 
   return (
-    <section className="border-b border-emerald-100 bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+    <section className="border-b border-emerald-100 bg-white">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-bold text-gray-900 sm:text-lg">
+            {t("sectionTitle")}
+          </h2>
+          <span className="text-xs font-medium text-gray-500 sm:text-sm">
+            {index + 1} / {count}
+          </span>
+        </div>
+
         <div
-          className="group relative overflow-hidden rounded-2xl shadow-md ring-1 ring-black/5"
+          className="group relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onFocusCapture={() => setIsPaused(true)}
-          onBlurCapture={() => setIsPaused(false)}
           onTouchStart={(e) => handleTouchStart(e.touches[0].clientX)}
           onTouchEnd={(e) => handleTouchEnd(e.changedTouches[0].clientX)}
           aria-roledescription="carousel"
           aria-label={t("ariaLabel")}
         >
-          <div
-            className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {HERO_BANNERS.map((banner, slideIndex) => (
-              <article
-                key={banner.id}
-                className={`relative flex min-w-full flex-col justify-center bg-gradient-to-br ${banner.gradient} ${banner.pattern} aspect-[16/9] sm:aspect-[21/9] md:aspect-[2.8/1]`}
-                aria-hidden={slideIndex !== index}
-              >
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10 flex h-full flex-col justify-center px-6 py-8 sm:px-10 sm:py-10 md:px-14 lg:px-16">
-                  <span className="mb-3 inline-flex w-fit rounded-full bg-white/20 px-3 py-1 text-xs font-semibold tracking-wide text-white backdrop-blur-sm sm:text-sm">
-                    {t(`${banner.id}.badge`)}
-                  </span>
-                  <h2 className="max-w-xl text-xl font-bold leading-tight text-white sm:max-w-2xl sm:text-3xl md:text-4xl">
-                    {t(`${banner.id}.title`)}
-                  </h2>
-                  <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/90 sm:mt-3 sm:text-base md:text-lg">
-                    {t(`${banner.id}.subtitle`)}
-                  </p>
-                  <Link
-                    href={banner.href}
-                    className="mt-5 inline-flex w-fit items-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-emerald-50 sm:mt-6 sm:px-6 sm:py-3"
-                  >
-                    {t(`${banner.id}.cta`)}
-                  </Link>
-                </div>
-              </article>
-            ))}
+          <div ref={viewportRef} className="overflow-hidden rounded-2xl">
+            <div
+              className="flex gap-3 transition-transform duration-500 ease-out motion-reduce:transition-none"
+              style={{
+                transform:
+                  slideStep > 0
+                    ? `translate3d(-${index * slideStep}px, 0, 0)`
+                    : undefined,
+              }}
+            >
+              {HERO_BANNERS.map((banner, slideIndex) => (
+                <article
+                  key={banner.id}
+                  data-banner-slide
+                  className={`relative h-40 w-[88%] shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br shadow-md sm:h-48 sm:w-[calc(50%-6px)] lg:h-52 lg:w-[calc(33.333%-8px)] ${banner.gradient} ${banner.pattern}`}
+                  aria-hidden={slideIndex !== index}
+                >
+                  <div className="absolute inset-0 bg-black/15" />
+                  <div className="relative z-10 flex h-full flex-col justify-center px-5 py-4 sm:px-6">
+                    <span className="mb-2 inline-flex w-fit rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white sm:text-xs">
+                      {t(`${banner.id}.badge`)}
+                    </span>
+                    <h3 className="line-clamp-2 text-base font-bold leading-snug text-white sm:text-lg lg:text-xl">
+                      {t(`${banner.id}.title`)}
+                    </h3>
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-white/90 sm:text-sm">
+                      {t(`${banner.id}.subtitle`)}
+                    </p>
+                    <Link
+                      href={banner.href}
+                      className="mt-3 inline-flex w-fit items-center rounded-lg bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-900 shadow-sm transition hover:bg-emerald-50 sm:text-sm"
+                    >
+                      {t(`${banner.id}.cta`)}
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
 
           <button
             type="button"
             onClick={() => goTo(index - 1)}
-            className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-md opacity-0 transition hover:bg-white focus:opacity-100 group-hover:opacity-100 sm:left-4 sm:h-10 sm:w-10"
+            className="absolute -left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition hover:bg-emerald-50 sm:-left-4 sm:h-10 sm:w-10"
             aria-label={t("prev")}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -99,13 +131,13 @@ export function HeroBanner() {
           <button
             type="button"
             onClick={() => goTo(index + 1)}
-            className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-800 shadow-md opacity-0 transition hover:bg-white focus:opacity-100 group-hover:opacity-100 sm:right-4 sm:h-10 sm:w-10"
+            className="absolute -right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-800 shadow-md transition hover:bg-emerald-50 sm:-right-4 sm:h-10 sm:w-10"
             aria-label={t("next")}
           >
             <ChevronRight className="h-5 w-5" />
           </button>
 
-          <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-4">
+          <div className="mt-3 flex justify-center gap-2">
             {HERO_BANNERS.map((banner, i) => (
               <button
                 key={banner.id}
@@ -113,8 +145,8 @@ export function HeroBanner() {
                 onClick={() => goTo(i)}
                 className={`h-2 rounded-full transition-all ${
                   i === index
-                    ? "w-6 bg-white"
-                    : "w-2 bg-white/50 hover:bg-white/80"
+                    ? "w-7 bg-emerald-600"
+                    : "w-2 bg-gray-300 hover:bg-emerald-300"
                 }`}
                 aria-label={t(`${banner.id}.title`)}
                 aria-current={i === index}

@@ -17,6 +17,7 @@
     "statsProducts": "products waiting for you",
     "statsUsers": "customers with us",
     "banners": {
+      "sectionTitle": "Promotions",
       "ariaLabel": "Promotional banners",
       "prev": "Previous banner",
       "next": "Next banner",

@@ -17,6 +17,7 @@
     "statsProducts": "ta mahsulot sizni kutmoqda",
     "statsUsers": "nafar mijoz biz bilan",
     "banners": {
+      "sectionTitle": "Aksiyalar",
       "ariaLabel": "Aksiya bannerlari",
       "prev": "Oldingi banner",
       "next": "Keyingi banner",
