@@ -9,6 +9,13 @@ export interface HeroBannerConfig {
   pattern: string;
 }
 
+export interface HeroBannerItem extends HeroBannerConfig {
+  badge: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+}
+
 export const HERO_BANNERS: HeroBannerConfig[] = [
   {
     id: "sale",
