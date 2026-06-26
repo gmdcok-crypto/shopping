@@ -1,7 +1,25 @@
 # HARAL — Railway 배포 가이드
 
-> **Netlify는 사용하지 않습니다.** 프론트·백엔드 **모두 Railway**에서만 배포합니다.  
-> GitHub `main` 푸시 → Railway 자동 배포. 로컬 `npm run dev` 없이 Railway URL에서 확인하세요.
+## Netlify 빌드 오류가 뜰 때
+
+이 저장소는 **Railway 전용**입니다. GitHub에 연결된 **Netlify 사이트가 남아 있으면** 푸시할 때마다 아래 오류가 납니다.
+
+```
+build.command failed — npm run build (exit code 254)
+```
+
+원인: Netlify가 저장소 **루트**에서 `npm run build`를 실행하는데, 루트에는 `package.json`이 없고 프론트는 `haral-shop/`에 있습니다.
+
+### 해결 (Netlify 끄기)
+
+1. [Netlify Dashboard](https://app.netlify.com) → 해당 사이트
+2. **Site configuration** → **Build & deploy** → **Stop builds**  
+   또는 **General** → **Delete site**
+3. GitHub 연결을 끊으면 푸시 시 Netlify 빌드가 더 이상 실행되지 않습니다.
+
+**배포는 Railway `web` 서비스만 사용하세요.** (Netlify 아님)
+
+---
 
 ## UI가 안 바뀔 때 (히어로 배너 등)
 
