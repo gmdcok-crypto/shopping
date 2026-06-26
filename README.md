@@ -17,7 +17,12 @@ HARAL/
 | `/ko/`, `/en/` … | 정적 PWA (Next export) |
 | `/` | `/ko/` 리다이렉트 |
 
-배포 가이드: [RAILWAY.md](./RAILWAY.md)
+## 배포 (택 1)
+
+| 방식 | 프론트 | API | 문서 |
+|------|--------|-----|------|
+| **분리** (record 패턴) | Netlify | Railway | [NETLIFY.md](./NETLIFY.md) |
+| **단일** | Railway | Railway | [RAILWAY.md](./RAILWAY.md) B |
 
 ## 로컬 실행
 

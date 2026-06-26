@@ -1,17 +1,13 @@
-# HARAL 프론트 — Netlify (정적 export)
-# API는 Railway. @netlify/plugin-nextjs 불필요 (publish = out).
-# ★ Netlify UI Build settings(Base/Publish/Command)는 전부 비우세요.
+# haral-shop 전용 (Netlify Base directory = haral-shop 일 때)
+# 루트 netlify.toml 과 동일 설정. 하나만 적용되면 됩니다.
 
 [build]
-  base = "haral-shop"
   command = "npm ci && npm run build"
   publish = "out"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# 브라우저는 같은 출처 /api/* 호출 → Netlify가 Railway로 프록시
-# ★ Railway API Public URL로 바꾸세요 (통합 서비스 또는 backend 전용 api)
 [[redirects]]
   from = "/"
   to = "/ko/"
