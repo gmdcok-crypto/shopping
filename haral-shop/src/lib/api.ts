@@ -1,20 +1,30 @@
 function getApiBase(): string {
-  const url = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
-  if (url) return url;
+  const isServer = typeof window === "undefined";
 
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(
-      "NEXT_PUBLIC_API_URL is required. Set it in Railway Variables before build."
+  if (isServer) {
+    const url = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL)?.replace(
+      /\/$/,
+      ""
     );
+    if (url) return url;
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "API_URL is required. Add it in Netlify Environment variables, then redeploy."
+      );
+    }
+    return "http://localhost:8000";
   }
 
-  return "http://localhost:8000";
+  // Browser: same-origin /api/* → Next.js rewrite → Railway API
+  const direct = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+  if (direct) return direct;
+  return "";
 }
 
 export function getApiUrl(path: string): string {
   const base = getApiBase();
   const p = path.startsWith("/") ? path : `/${path}`;
-  return `${base}${p}`;
+  return base ? `${base}${p}` : p;
 }
 
 export async function apiFetch<T>(

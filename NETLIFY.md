@@ -4,49 +4,62 @@
 
 ---
 
-## ★ Build settings (UI) — 전부 비우기
+## ★ 1. Environment variables (필수 — 상품이 안 나오면 여기)
 
-Netlify UI → **Site configuration** → **Build & deploy** → **Build settings**
+Netlify → **Site configuration** → **Environment variables** → **Add a variable**
+
+| Key | Value | Scopes |
+|-----|-------|--------|
+| `API_URL` | Railway **`api`** 서비스 URL | **Builds** (필수) |
+
+예:
+```
+API_URL=https://api-production-xxxx.up.railway.app
+```
+
+> `shopping-production-....railway.app` 은 **옛 프론트(Railway web)** URL 입니다.  
+> **`api` 서비스** 도메인을 넣어야 상품이 나옵니다.
+
+변수 추가·변경 후 **반드시 Redeploy** 하세요. (`NEXT_PUBLIC_*` / `API_URL` 은 **빌드 시** 주입됩니다.)
+
+---
+
+## 2. Build settings (UI) — 전부 비우기
 
 | 항목 | 값 |
 |------|-----|
-| **Base directory** | *(비움)* |
-| **Package directory** | *(비움)* |
-| **Build command** | *(비움)* |
-| **Publish directory** | *(비움)* |
+| Base directory | *(비움)* |
+| Package directory | *(비움)* |
+| Build command | *(비움)* |
+| Publish directory | *(비움)* |
 
-> UI에 `haral-shop` / `.next` / `npm run build` 가 남아 있으면 **삭제** 후 Save.  
-> UI 설정이 `netlify.toml` 보다 **우선**합니다.
-
-모든 설정은 저장소 **루트** `netlify.toml` 이 담당합니다:
-
-```toml
-base = "haral-shop"
-command = "npm run build"
-publish = ".next"      # haral-shop/.next (base와 다름)
-NODE_VERSION = "22"
-```
-
-### 자주 나는 오류
-
-| 오류 | 원인 | 해결 |
-|------|------|------|
-| `publish directory cannot be the same as base` | UI에 Base=`haral-shop` + Publish 비움 | **UI 전부 비우기** |
-| Node 20 vs 22 | 구버전 Node | `netlify.toml`에 Node 22 (이미 설정됨) |
-| exit 254 | 루트에서 빌드 | `netlify.toml` base 사용 |
+설정은 루트 `netlify.toml` 이 처리합니다.
 
 ---
 
-## Environment variables
+## 3. Railway (백엔드)
 
-| 변수 | 값 |
-|------|-----|
-| `NEXT_PUBLIC_API_URL` | Railway `api` URL |
+| 서비스 | Root Directory |
+|--------|----------------|
+| **api** | `backend` |
+| **mysql** | 플러그인 |
+
+`api` 가 배포되고 `/api/health` 가 200이어야 상품이 표시됩니다.
 
 ---
 
-## 배포
+## 4. 배포 후 확인
 
-1. UI Build settings **전부 비운 뒤** Save
-2. **Deploys** → **Trigger deploy**
-3. Netlify URL `/ko` 확인
+1. Netlify **Deploys** → Published  
+2. `/ko` → 행사 배너 + **상품 목록**  
+3. 상품 영역에 `API_URL is required` 가 보이면 → 변수 설정 후 **재배포**
+
+---
+
+## 5. 문제 해결
+
+| 증상 | 해결 |
+|------|------|
+| `NEXT_PUBLIC_API_URL is required` / `API_URL is required` | Netlify에 `API_URL` 추가 → **Redeploy** |
+| 상품 없음 / API error | Railway `api` + MySQL 확인 |
+| `publish = base` | UI Build settings 전부 비우기 |

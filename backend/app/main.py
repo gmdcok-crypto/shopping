@@ -35,7 +35,7 @@ extra_origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=extra_origins,
-    allow_origin_regex=r"https://([a-zA-Z0-9-]+\.)*(up\.)?railway\.app",
+    allow_origin_regex=r"https://([a-zA-Z0-9-]+\.)*((up\.)?railway\.app|netlify\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

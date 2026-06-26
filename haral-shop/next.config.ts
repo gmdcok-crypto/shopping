@@ -3,6 +3,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+const apiOrigin =
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8000";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -19,6 +24,10 @@ const nextConfig: NextConfig = {
         hostname: "*.r2.cloudflarestorage.com",
       },
     ],
+  },
+  async rewrites() {
+    const base = apiOrigin.replace(/\/$/, "");
+    return [{ source: "/api/:path*", destination: `${base}/api/:path*` }];
   },
   async headers() {
     return [
