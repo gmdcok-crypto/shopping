@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { HeroPromoCarousel } from "@/components/HeroPromoCarousel";
+import { HomeTopSection } from "@/components/HomeTopSection";
 import { HomeStorefront } from "@/components/HomeStorefront";
 import { HERO_BANNERS } from "@/lib/hero-banners";
 
@@ -23,7 +23,7 @@ export default async function HomePage({
 
   return (
     <>
-      <HeroPromoCarousel items={bannerItems} />
+      <HomeTopSection items={bannerItems} />
       <Suspense
         fallback={
           <div className="py-20 text-center text-gray-400">...</div>
