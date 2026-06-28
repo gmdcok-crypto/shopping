@@ -30,8 +30,8 @@ function HomeTopSectionInner({ items }: HomeTopSectionProps) {
   if (!items.length) return null;
 
   return (
-    <section className="border-b border-gray-100 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+    <section className="bg-white">
+      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
           <CategorySidebar />
           <div
