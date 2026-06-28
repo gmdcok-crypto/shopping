@@ -9,7 +9,7 @@ from starlette.staticfiles import StaticFiles as StarletteStaticFiles
 
 from app.config import settings
 from app.database import Base, SessionLocal, engine
-from app.routers import auth, orders, products, upload
+from app.routers import admin, auth, orders, products, upload
 from app.services.seed import seed_products
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
@@ -63,6 +63,7 @@ app.add_middleware(
 
 app.include_router(products.router, prefix=settings.api_prefix)
 app.include_router(orders.router, prefix=settings.api_prefix)
+app.include_router(admin.router, prefix=settings.api_prefix)
 app.include_router(auth.router, prefix=settings.api_prefix)
 app.include_router(upload.router, prefix=settings.api_prefix)
 

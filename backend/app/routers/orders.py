@@ -71,6 +71,14 @@ def list_orders(db: Session = Depends(get_db)):
         "items": [
             {
                 "id": o.id,
+                "name": o.name,
+                "phone": o.phone,
+                "address": o.address,
+                "city": o.city,
+                "postal_code": o.postal_code,
+                "payment_method": o.payment_method,
+                "subtotal": o.subtotal,
+                "shipping_fee": o.shipping_fee,
                 "total": o.total,
                 "locale": o.locale,
                 "created_at": o.created_at.isoformat(),
@@ -86,4 +94,46 @@ def list_orders(db: Session = Depends(get_db)):
             for o in orders
         ],
         "total": len(orders),
+    }
+
+
+@router.get("/{order_id}", dependencies=[Depends(verify_admin)])
+def get_order(order_id: str, db: Session = Depends(get_db)):
+    from fastapi import HTTPException
+
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    product_names: dict[str, str] = {}
+    for item in order.items:
+        if item.product_id not in product_names:
+            product = db.query(Product).filter(Product.id == item.product_id).first()
+            product_names[item.product_id] = (
+                product.names.get("ko", item.product_id) if product else item.product_id
+            )
+
+    return {
+        "id": order.id,
+        "name": order.name,
+        "phone": order.phone,
+        "address": order.address,
+        "city": order.city,
+        "postal_code": order.postal_code,
+        "payment_method": order.payment_method,
+        "subtotal": order.subtotal,
+        "shipping_fee": order.shipping_fee,
+        "total": order.total,
+        "locale": order.locale,
+        "created_at": order.created_at.isoformat(),
+        "items": [
+            {
+                "product_id": i.product_id,
+                "product_name": product_names.get(i.product_id, i.product_id),
+                "quantity": i.quantity,
+                "unit_price": i.unit_price,
+                "line_total": i.quantity * i.unit_price,
+            }
+            for i in order.items
+        ],
     }
