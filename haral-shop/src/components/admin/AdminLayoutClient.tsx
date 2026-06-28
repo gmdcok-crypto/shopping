@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { useAdminI18n } from "@/components/admin/AdminI18nProvider";
@@ -39,5 +39,15 @@ export function AdminLayoutClient({
   }
 
   if (isLogin) return <>{children}</>;
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 text-sm text-gray-500">
+          {t("common.loading")}
+        </div>
+      }
+    >
+      <AdminShell>{children}</AdminShell>
+    </Suspense>
+  );
 }

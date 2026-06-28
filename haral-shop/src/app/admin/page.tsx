@@ -119,6 +119,38 @@ export default function AdminDashboardPage() {
         />
       </div>
 
+      <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h2 className="mb-4 font-bold text-gray-900">{t("dashboard.workTodo")}</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: t("dashboard.todoPayment"), href: "/admin/coming-soon/?feature=payment-pending", count: 0 },
+            { label: t("dashboard.todoShipping"), href: "/admin/coming-soon/?feature=shipping-prep", count: 0 },
+            { label: t("dashboard.todoReturns"), href: "/admin/coming-soon/?feature=returns", count: 0 },
+            { label: t("dashboard.todoMembers"), href: "/admin/coming-soon/?feature=member-list", count: 0 },
+          ].map((todo) => (
+            <Link
+              key={todo.href}
+              href={todo.href}
+              className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 hover:border-emerald-200 hover:bg-emerald-50/50"
+            >
+              <p className="text-xs text-gray-500">{todo.label}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">{todo.count}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-dashed border-gray-200 bg-white p-8 text-center shadow-sm">
+        <h2 className="font-bold text-gray-900">{t("dashboard.salesTrend")}</h2>
+        <p className="mt-2 text-sm text-gray-500">{t("dashboard.trendPlaceholder")}</p>
+        <Link
+          href="/admin/coming-soon/?feature=sales-stats"
+          className="mt-4 inline-flex text-sm font-medium text-emerald-600 hover:underline"
+        >
+          {t("shell.nav.salesStats")} →
+        </Link>
+      </section>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
