@@ -6,11 +6,13 @@ import Link from "next/link";
 import { ProductForm, type ProductFormValues } from "@/components/admin/ProductForm";
 import { fetchProduct } from "@/lib/api-client";
 import { updateProduct, uploadProductImage } from "@/lib/api-admin";
+import { useAdminI18n } from "@/components/admin/AdminI18nProvider";
 import type { Product } from "@/lib/products";
 
 function EditProductInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { locale, t } = useAdminI18n();
   const productId = searchParams.get("id") ?? "";
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ function EditProductInner() {
 
   useEffect(() => {
     if (!productId) {
-      setError("상품 ID가 없습니다.");
+      setError(t("products.noProductId"));
       setLoading(false);
       return;
     }
@@ -28,7 +30,7 @@ function EditProductInner() {
       .then(setProduct)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [productId]);
+  }, [productId, t]);
 
   async function handleSubmit(values: ProductFormValues) {
     setSaving(true);
@@ -58,24 +60,26 @@ function EditProductInner() {
 
   if (loading) {
     return (
-      <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+      <div className="py-20 text-center text-sm text-gray-400">{t("common.loading")}</div>
     );
   }
 
   if (error || !product) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-red-600">{error ?? "상품을 찾을 수 없습니다."}</p>
+        <p className="text-sm text-red-600">{error ?? t("products.notFound")}</p>
         <button
           type="button"
           onClick={() => router.push("/admin/products/")}
-          className="text-sm text-[#03a94d] hover:underline"
+          className="text-sm text-emerald-600 hover:underline"
         >
-          상품 목록으로
+          {t("common.backToList")}
         </button>
       </div>
     );
   }
+
+  const displayName = locale === "en" ? product.names.en : product.names.ko;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -84,15 +88,15 @@ function EditProductInner() {
           href="/admin/products/"
           className="text-sm text-gray-500 hover:text-gray-700"
         >
-          ← 상품 목록
+          {t("common.backToList")}
         </Link>
-        <h1 className="mt-2 text-xl font-bold text-gray-900">상품 수정</h1>
-        <p className="mt-1 text-sm text-gray-500">{product.names.ko}</p>
+        <h1 className="mt-2 text-xl font-bold text-gray-900">{t("products.editTitle")}</h1>
+        <p className="mt-1 text-sm text-gray-500">{displayName}</p>
       </div>
 
       {success && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          저장되었습니다.
+          {t("common.saved")}
         </div>
       )}
 
@@ -108,10 +112,12 @@ function EditProductInner() {
 }
 
 export default function AdminEditProductPage() {
+  const { t } = useAdminI18n();
+
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+        <div className="py-20 text-center text-sm text-gray-400">{t("common.loading")}</div>
       }
     >
       <EditProductInner />

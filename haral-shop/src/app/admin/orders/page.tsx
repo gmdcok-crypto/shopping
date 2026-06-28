@@ -5,27 +5,33 @@ import { useSearchParams } from "next/navigation";
 import {
   fetchAdminOrder,
   fetchAdminOrders,
-  formatAdminDate,
-  formatAdminPrice,
   type AdminOrder,
 } from "@/lib/api-admin";
+import { formatAdminDate, formatAdminPrice } from "@/lib/admin-messages";
+import { useAdminI18n } from "@/components/admin/AdminI18nProvider";
 
 function OrderDetail({ order }: { order: AdminOrder }) {
+  const { locale, t } = useAdminI18n();
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">주문 {order.id}</h2>
-          <p className="text-sm text-gray-500">{formatAdminDate(order.created_at)}</p>
+          <h2 className="text-lg font-bold text-gray-900">
+            {t("orders.orderTitle", { id: order.id })}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {formatAdminDate(order.created_at, locale)}
+          </p>
         </div>
-        <p className="text-xl font-bold text-[#03a94d]">
-          {formatAdminPrice(order.total)}
+        <p className="text-xl font-bold text-emerald-600">
+          {formatAdminPrice(order.total, locale)}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-lg bg-gray-50 p-4 text-sm">
-          <p className="mb-2 font-semibold text-gray-900">배송 정보</p>
+          <p className="mb-2 font-semibold text-gray-900">{t("orders.shipping")}</p>
           <p className="text-gray-700">{order.name}</p>
           <p className="text-gray-600">{order.phone}</p>
           <p className="mt-1 text-gray-600">
@@ -33,16 +39,19 @@ function OrderDetail({ order }: { order: AdminOrder }) {
           </p>
         </div>
         <div className="rounded-lg bg-gray-50 p-4 text-sm">
-          <p className="mb-2 font-semibold text-gray-900">결제 정보</p>
+          <p className="mb-2 font-semibold text-gray-900">{t("orders.payment")}</p>
           <p className="text-gray-600">
-            결제수단: {order.payment_method === "card" ? "카드" : "계좌이체"}
+            {t("orders.paymentMethod")}:{" "}
+            {order.payment_method === "card" ? t("orders.card") : t("orders.bank")}
           </p>
-          <p className="text-gray-600">언어: {order.locale}</p>
+          <p className="text-gray-600">
+            {t("orders.language")}: {order.locale}
+          </p>
           <p className="mt-2 text-gray-600">
-            상품금액 {formatAdminPrice(order.subtotal)}
+            {t("orders.subtotal")} {formatAdminPrice(order.subtotal, locale)}
           </p>
           <p className="text-gray-600">
-            배송비 {formatAdminPrice(order.shipping_fee)}
+            {t("orders.shippingFee")} {formatAdminPrice(order.shipping_fee, locale)}
           </p>
         </div>
       </div>
@@ -51,10 +60,10 @@ function OrderDetail({ order }: { order: AdminOrder }) {
         <table className="w-full min-w-[480px] text-left text-sm">
           <thead className="border-b border-gray-200 text-xs text-gray-500">
             <tr>
-              <th className="py-2 pr-4">상품</th>
-              <th className="py-2 pr-4">수량</th>
-              <th className="py-2 pr-4">단가</th>
-              <th className="py-2">합계</th>
+              <th className="py-2 pr-4">{t("orders.colProduct")}</th>
+              <th className="py-2 pr-4">{t("orders.colQty")}</th>
+              <th className="py-2 pr-4">{t("orders.colUnitPrice")}</th>
+              <th className="py-2">{t("orders.colLineTotal")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -67,9 +76,14 @@ function OrderDetail({ order }: { order: AdminOrder }) {
                   <p className="text-xs text-gray-400">{item.product_id}</p>
                 </td>
                 <td className="py-3 pr-4">{item.quantity}</td>
-                <td className="py-3 pr-4">{formatAdminPrice(item.unit_price)}</td>
+                <td className="py-3 pr-4">
+                  {formatAdminPrice(item.unit_price, locale)}
+                </td>
                 <td className="py-3 font-medium">
-                  {formatAdminPrice(item.line_total ?? item.quantity * item.unit_price)}
+                  {formatAdminPrice(
+                    item.line_total ?? item.quantity * item.unit_price,
+                    locale
+                  )}
                 </td>
               </tr>
             ))}
@@ -82,6 +96,7 @@ function OrderDetail({ order }: { order: AdminOrder }) {
 
 function OrdersPageInner() {
   const searchParams = useSearchParams();
+  const { locale, t } = useAdminI18n();
   const selectedId = searchParams.get("id");
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [selected, setSelected] = useState<AdminOrder | null>(null);
@@ -108,24 +123,22 @@ function OrdersPageInner() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">주문 목록</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          신규 주문부터 배송 정보까지 확인합니다.
-        </p>
+        <h1 className="text-xl font-bold text-gray-900">{t("orders.title")}</h1>
+        <p className="mt-1 text-sm text-gray-500">{t("orders.subtitle")}</p>
       </div>
 
       {selected && <OrderDetail order={selected} />}
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
         {loading && (
-          <p className="py-16 text-center text-sm text-gray-400">불러오는 중...</p>
+          <p className="py-16 text-center text-sm text-gray-400">{t("common.loading")}</p>
         )}
         {error && (
           <p className="py-16 text-center text-sm text-red-500">{error}</p>
         )}
         {!loading && !error && orders.length === 0 && (
           <p className="py-16 text-center text-sm text-gray-400">
-            아직 주문이 없습니다.
+            {t("orders.noOrders")}
           </p>
         )}
         {!loading && !error && orders.length > 0 && (
@@ -133,13 +146,13 @@ function OrdersPageInner() {
             <table className="w-full min-w-[800px] text-left text-sm">
               <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-500">
                 <tr>
-                  <th className="px-4 py-3">주문번호</th>
-                  <th className="px-4 py-3">주문자</th>
-                  <th className="px-4 py-3">연락처</th>
-                  <th className="px-4 py-3">상품수</th>
-                  <th className="px-4 py-3">결제금액</th>
-                  <th className="px-4 py-3">주문일시</th>
-                  <th className="px-4 py-3">상세</th>
+                  <th className="px-4 py-3">{t("orders.colOrderId")}</th>
+                  <th className="px-4 py-3">{t("orders.colCustomer")}</th>
+                  <th className="px-4 py-3">{t("orders.colPhone")}</th>
+                  <th className="px-4 py-3">{t("orders.colItems")}</th>
+                  <th className="px-4 py-3">{t("orders.colTotal")}</th>
+                  <th className="px-4 py-3">{t("orders.colDate")}</th>
+                  <th className="px-4 py-3">{t("orders.colDetail")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -156,20 +169,22 @@ function OrdersPageInner() {
                     <td className="px-4 py-3 text-gray-700">{order.name}</td>
                     <td className="px-4 py-3 text-gray-600">{order.phone}</td>
                     <td className="px-4 py-3 text-gray-600">
-                      {order.items.reduce((s, i) => s + i.quantity, 0)}개
+                      {t("common.items", {
+                        count: order.items.reduce((s, i) => s + i.quantity, 0),
+                      })}
                     </td>
                     <td className="px-4 py-3 font-medium text-gray-900">
-                      {formatAdminPrice(order.total)}
+                      {formatAdminPrice(order.total, locale)}
                     </td>
                     <td className="px-4 py-3 text-gray-500">
-                      {formatAdminDate(order.created_at)}
+                      {formatAdminDate(order.created_at, locale)}
                     </td>
                     <td className="px-4 py-3">
                       <a
                         href={`/admin/orders/?id=${order.id}`}
-                        className="font-medium text-[#03a94d] hover:underline"
+                        className="font-medium text-emerald-600 hover:underline"
                       >
-                        보기
+                        {t("common.view")}
                       </a>
                     </td>
                   </tr>
@@ -184,10 +199,12 @@ function OrdersPageInner() {
 }
 
 export default function AdminOrdersPage() {
+  const { t } = useAdminI18n();
+
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+        <div className="py-20 text-center text-sm text-gray-400">{t("common.loading")}</div>
       }
     >
       <OrdersPageInner />

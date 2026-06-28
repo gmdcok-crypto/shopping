@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { Product, ProductCategory } from "@/lib/products";
-import { CATEGORY_LABELS } from "@/lib/api-admin";
+import { useAdminI18n } from "@/components/admin/AdminI18nProvider";
+import type { AdminMessageKey } from "@/lib/admin-messages";
 
 const CATEGORIES: ProductCategory[] = [
   "meat",
@@ -15,12 +16,6 @@ const CATEGORIES: ProductCategory[] = [
 ];
 
 const LOCALES = ["ko", "en", "ru", "uz"] as const;
-const LOCALE_LABELS: Record<(typeof LOCALES)[number], string> = {
-  ko: "한국어",
-  en: "English",
-  ru: "Русский",
-  uz: "O'zbek",
-};
 
 export interface ProductFormValues {
   id: string;
@@ -77,11 +72,22 @@ export function ProductForm({
   onSubmit,
   onImageUpload,
 }: ProductFormProps) {
+  const { t } = useAdminI18n();
   const [values, setValues] = useState<ProductFormValues>(
     initial ? productToForm(initial) : emptyProductForm()
   );
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const localeLabels: Record<(typeof LOCALES)[number], string> = {
+    ko: t("productForm.localeKo"),
+    en: t("productForm.localeEn"),
+    ru: t("productForm.localeRu"),
+    uz: t("productForm.localeUz"),
+  };
+
+  const categoryLabel = (cat: ProductCategory) =>
+    t(`categories.${cat}` as AdminMessageKey);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,7 +95,7 @@ export function ProductForm({
     try {
       await onSubmit(values);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "저장 실패");
+      setError(err instanceof Error ? err.message : t("common.saveFailed"));
     }
   }
 
@@ -101,7 +107,7 @@ export function ProductForm({
     try {
       await onImageUpload(file);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "이미지 업로드 실패");
+      setError(err instanceof Error ? err.message : t("common.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -116,10 +122,14 @@ export function ProductForm({
       )}
 
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900">기본 정보</h2>
+        <h2 className="mb-4 text-base font-bold text-gray-900">
+          {t("productForm.basicInfo")}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-gray-700">상품 ID</span>
+            <span className="mb-1 block font-medium text-gray-700">
+              {t("productForm.productId")}
+            </span>
             <input
               required
               disabled={!isNew}
@@ -132,7 +142,9 @@ export function ProductForm({
             />
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-gray-700">카테고리</span>
+            <span className="mb-1 block font-medium text-gray-700">
+              {t("productForm.category")}
+            </span>
             <select
               value={values.category}
               onChange={(e) =>
@@ -145,13 +157,15 @@ export function ProductForm({
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
-                  {CATEGORY_LABELS[cat]}
+                  {categoryLabel(cat)}
                 </option>
               ))}
             </select>
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-gray-700">가격 (원)</span>
+            <span className="mb-1 block font-medium text-gray-700">
+              {t("productForm.price")}
+            </span>
             <input
               required
               type="number"
@@ -164,7 +178,9 @@ export function ProductForm({
             />
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-gray-700">중량</span>
+            <span className="mb-1 block font-medium text-gray-700">
+              {t("productForm.weight")}
+            </span>
             <input
               value={values.weight}
               onChange={(e) =>
@@ -183,7 +199,7 @@ export function ProductForm({
               }
               className="rounded border-gray-300"
             />
-            <span className="font-medium text-gray-700">판매 중</span>
+            <span className="font-medium text-gray-700">{t("productForm.onSale")}</span>
           </label>
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -194,13 +210,13 @@ export function ProductForm({
               }
               className="rounded border-gray-300"
             />
-            <span className="font-medium text-gray-700">인기 상품</span>
+            <span className="font-medium text-gray-700">{t("productForm.popular")}</span>
           </label>
         </div>
       </section>
 
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900">이미지</h2>
+        <h2 className="mb-4 text-base font-bold text-gray-900">{t("productForm.image")}</h2>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           {values.image && (
             <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
@@ -215,7 +231,9 @@ export function ProductForm({
           )}
           <div className="flex-1 space-y-3">
             <label className="block text-sm">
-              <span className="mb-1 block font-medium text-gray-700">이미지 URL</span>
+              <span className="mb-1 block font-medium text-gray-700">
+                {t("productForm.imageUrl")}
+              </span>
               <input
                 value={values.image}
                 onChange={(e) =>
@@ -227,7 +245,7 @@ export function ProductForm({
             </label>
             {onImageUpload && !isNew && (
               <label className="inline-flex cursor-pointer items-center rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                {uploading ? "업로드 중..." : "이미지 파일 업로드"}
+                {uploading ? t("productForm.uploading") : t("productForm.uploadImage")}
                 <input
                   type="file"
                   accept="image/*"
@@ -242,41 +260,47 @@ export function ProductForm({
       </section>
 
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900">상품명 / 설명</h2>
+        <h2 className="mb-4 text-base font-bold text-gray-900">
+          {t("productForm.namesDesc")}
+        </h2>
         <div className="space-y-4">
-          {LOCALES.map((locale) => (
+          {LOCALES.map((loc) => (
             <div
-              key={locale}
+              key={loc}
               className="rounded-lg border border-gray-100 bg-gray-50/50 p-4"
             >
               <p className="mb-3 text-xs font-semibold text-gray-500">
-                {LOCALE_LABELS[locale]}
+                {localeLabels[loc]}
               </p>
               <label className="mb-3 block text-sm">
-                <span className="mb-1 block font-medium text-gray-700">상품명</span>
+                <span className="mb-1 block font-medium text-gray-700">
+                  {t("productForm.name")}
+                </span>
                 <input
-                  required={locale === "ko"}
-                  value={values.names[locale]}
+                  required={loc === "ko"}
+                  value={values.names[loc]}
                   onChange={(e) =>
                     setValues((v) => ({
                       ...v,
-                      names: { ...v.names, [locale]: e.target.value },
+                      names: { ...v.names, [loc]: e.target.value },
                     }))
                   }
                   className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm"
                 />
               </label>
               <label className="block text-sm">
-                <span className="mb-1 block font-medium text-gray-700">설명</span>
+                <span className="mb-1 block font-medium text-gray-700">
+                  {t("productForm.description")}
+                </span>
                 <textarea
                   rows={2}
-                  value={values.descriptions[locale]}
+                  value={values.descriptions[loc]}
                   onChange={(e) =>
                     setValues((v) => ({
                       ...v,
                       descriptions: {
                         ...v.descriptions,
-                        [locale]: e.target.value,
+                        [loc]: e.target.value,
                       },
                     }))
                   }
@@ -292,9 +316,9 @@ export function ProductForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-[#03a94d] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#029443] disabled:opacity-60"
+          className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
         >
-          {saving ? "저장 중..." : "저장"}
+          {saving ? t("common.saving") : t("common.save")}
         </button>
       </div>
     </form>

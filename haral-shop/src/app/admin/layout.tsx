@@ -1,7 +1,8 @@
 import { AdminLayoutClient } from "@/components/admin/AdminLayoutClient";
+import { AdminI18nProvider } from "@/components/admin/AdminI18nProvider";
 
 export const metadata = {
-  title: "HARAL 판매자센터",
+  title: "HARAL Shop Admin",
   robots: { index: false, follow: false },
 };
 
@@ -10,5 +11,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AdminLayoutClient>{children}</AdminLayoutClient>;
+  return (
+    <AdminI18nProvider>
+      <AdminLayoutClient>{children}</AdminLayoutClient>
+    </AdminI18nProvider>
+  );
 }

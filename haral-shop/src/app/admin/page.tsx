@@ -8,12 +8,9 @@ import {
   TrendingUp,
   AlertTriangle,
 } from "lucide-react";
-import {
-  fetchAdminDashboard,
-  formatAdminDate,
-  formatAdminPrice,
-  type AdminDashboard,
-} from "@/lib/api-admin";
+import { fetchAdminDashboard, type AdminDashboard } from "@/lib/api-admin";
+import { formatAdminDate, formatAdminPrice } from "@/lib/admin-messages";
+import { useAdminI18n } from "@/components/admin/AdminI18nProvider";
 
 function StatCard({
   label,
@@ -54,6 +51,7 @@ function StatCard({
 }
 
 export default function AdminDashboardPage() {
+  const { locale, t } = useAdminI18n();
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,7 +71,9 @@ export default function AdminDashboardPage() {
 
   if (!data) {
     return (
-      <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+      <div className="py-20 text-center text-sm text-gray-400">
+        {t("common.loading")}
+      </div>
     );
   }
 
@@ -82,38 +82,39 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">대시보드</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          오늘의 주문·매출 현황을 한눈에 확인하세요.
-        </p>
+        <h1 className="text-xl font-bold text-gray-900">{t("dashboard.title")}</h1>
+        <p className="mt-1 text-sm text-gray-500">{t("dashboard.subtitle")}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="오늘 매출"
-          value={formatAdminPrice(summary.today_sales)}
-          sub={`주문 ${summary.today_orders}건`}
+          label={t("dashboard.todaySales")}
+          value={formatAdminPrice(summary.today_sales, locale)}
+          sub={t("dashboard.ordersSub", { count: summary.today_orders })}
           icon={TrendingUp}
           accent="emerald"
         />
         <StatCard
-          label="이번 주 매출"
-          value={formatAdminPrice(summary.week_sales)}
-          sub={`주문 ${summary.week_orders}건`}
+          label={t("dashboard.weekSales")}
+          value={formatAdminPrice(summary.week_sales, locale)}
+          sub={t("dashboard.ordersSub", { count: summary.week_orders })}
           icon={ShoppingCart}
           accent="blue"
         />
         <StatCard
-          label="등록 상품"
-          value={`${summary.total_products}개`}
-          sub={`판매중 ${summary.in_stock_products} / 품절 ${summary.out_of_stock_products}`}
+          label={t("dashboard.totalProducts")}
+          value={t("common.items", { count: summary.total_products })}
+          sub={t("dashboard.stockSub", {
+            inStock: summary.in_stock_products,
+            outOfStock: summary.out_of_stock_products,
+          })}
           icon={Package}
           accent="amber"
         />
         <StatCard
-          label="누적 매출"
-          value={formatAdminPrice(summary.total_sales)}
-          sub={`총 주문 ${summary.total_orders}건`}
+          label={t("dashboard.totalSales")}
+          value={formatAdminPrice(summary.total_sales, locale)}
+          sub={t("dashboard.totalOrdersSub", { count: summary.total_orders })}
           icon={TrendingUp}
         />
       </div>
@@ -121,17 +122,17 @@ export default function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-            <h2 className="font-bold text-gray-900">최근 주문</h2>
+            <h2 className="font-bold text-gray-900">{t("dashboard.recentOrders")}</h2>
             <Link
               href="/admin/orders/"
-              className="text-sm font-medium text-[#03a94d] hover:underline"
+              className="text-sm font-medium text-emerald-600 hover:underline"
             >
-              전체 보기
+              {t("common.viewAll")}
             </Link>
           </div>
           {recent_orders.length === 0 ? (
             <p className="px-5 py-8 text-center text-sm text-gray-400">
-              아직 주문이 없습니다.
+              {t("dashboard.noOrders")}
             </p>
           ) : (
             <ul className="divide-y divide-gray-100">
@@ -146,15 +147,15 @@ export default function AdminDashboardPage() {
                         {order.name}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {order.id} · {formatAdminDate(order.created_at)}
+                        {order.id} · {formatAdminDate(order.created_at, locale)}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-gray-900">
-                        {formatAdminPrice(order.total)}
+                        {formatAdminPrice(order.total, locale)}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {order.item_count}개 상품
+                        {t("common.products", { count: order.item_count })}
                       </p>
                     </div>
                   </Link>
@@ -166,17 +167,17 @@ export default function AdminDashboardPage() {
 
         <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-            <h2 className="font-bold text-gray-900">품절 상품</h2>
+            <h2 className="font-bold text-gray-900">{t("dashboard.outOfStock")}</h2>
             <Link
               href="/admin/products/"
-              className="text-sm font-medium text-[#03a94d] hover:underline"
+              className="text-sm font-medium text-emerald-600 hover:underline"
             >
-              상품 관리
+              {t("dashboard.manageProducts")}
             </Link>
           </div>
           {low_stock.length === 0 ? (
             <p className="px-5 py-8 text-center text-sm text-gray-400">
-              품절 상품이 없습니다.
+              {t("dashboard.noOutOfStock")}
             </p>
           ) : (
             <ul className="divide-y divide-gray-100">

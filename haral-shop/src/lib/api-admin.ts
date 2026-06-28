@@ -4,7 +4,7 @@ import type { Product, ProductCategory } from "./products";
 
 function adminHeaders(extra?: HeadersInit): HeadersInit {
   const key = getAdminApiKey();
-  if (!key) throw new Error("관리자 인증이 필요합니다.");
+  if (!key) throw new Error("Admin authentication required");
   return { "X-API-Key": key, ...extra };
 }
 
@@ -131,7 +131,7 @@ export async function uploadProductImage(
   file: File
 ): Promise<Product> {
   const key = getAdminApiKey();
-  if (!key) throw new Error("관리자 인증이 필요합니다.");
+  if (!key) throw new Error("Admin authentication required");
 
   const formData = new FormData();
   formData.append("file", file);
@@ -152,26 +152,3 @@ export async function uploadProductImage(
 
   return res.json();
 }
-
-export function formatAdminPrice(amount: number): string {
-  return `₩${amount.toLocaleString("ko-KR")}`;
-}
-
-export function formatAdminDate(iso: string): string {
-  return new Date(iso).toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-export const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  meat: "할랄 고기",
-  sausage: "소시지",
-  grocery: "식료품",
-  dairy: "유제품",
-  spice: "향신료",
-  frozen: "냉동식품",
-};
