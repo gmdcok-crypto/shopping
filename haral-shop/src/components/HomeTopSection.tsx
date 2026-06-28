@@ -30,10 +30,10 @@ function HomeTopSectionInner({ items }: HomeTopSectionProps) {
   if (!items.length) return null;
 
   return (
-    <section
-      className={`border-b border-gray-100 transition-colors duration-700 ${active?.sectionBg ?? "bg-gray-50"}`}
-    >
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+    <section className="border-b border-gray-100 bg-white">
+      <div
+        className={`mx-auto max-w-7xl px-4 py-4 transition-colors duration-700 sm:px-6 sm:py-5 lg:px-8 ${active?.sectionBg ?? "bg-gray-50"}`}
+      >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
           <CategorySidebar />
           <div className="min-h-44 min-w-0 flex-1 sm:min-h-48 lg:min-h-[280px]">
