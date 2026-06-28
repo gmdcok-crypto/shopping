@@ -31,7 +31,7 @@ function HomeTopSectionInner({ items }: HomeTopSectionProps) {
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-4 pb-[2mm] sm:px-6 sm:pt-5 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
           <CategorySidebar />
           <div
